@@ -5,5 +5,11 @@ MongoClient.connect(url, (err, db) =>
 {
     if (err) throw err
     console.log('Database created!')
-    db.close()
+    var dbo = db.db('mydb')
+    dbo.createCollection('customers', function(err, res)
+    {
+        if (err) throw err
+        console.log('Collection created!')
+        db.close()
+    })
 })
