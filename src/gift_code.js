@@ -21,35 +21,6 @@ let GiftCode =
     }
 }
 
-// MongoClient.connect(url, (err, db) =>
-// {
-//     if (err) throw err
-//     let dbo = db.db('mydb')
-
-//     // dbo.collection('gift').drop((err, result) =>
-//     // {
-//     //     if (err) throw err
-
-//     //     db.close()
-//     // })
-
-//     // dbo.collection('gift').insertOne({ _id: GiftCode.random }, (err, res) =>
-//     // {
-//     //     if (err) throw err
-//     //     console.log(res)
-//     //     db.close()
-//     // })
-
-//     // dbo.collection('gift').find({},).toArray((err, result) =>
-//     // {
-//     //     if (err) throw err
-//     //     console.log(result)
-//     //     db.close()
-//     // })
-
-// })
-
-
 class Database
 {
     constructor(name)
@@ -76,8 +47,7 @@ class Database
         {
             this.dbo.collection(alias).drop((error, result) =>
             {
-                error && reject()
-                resolve(result)
+                resolve(error ? undefined : result)
             })
         })
     }
@@ -88,8 +58,7 @@ class Database
         {
             this.dbo.collection(alias).insertMany(objects, (error, result) =>
             {
-                error && reject()
-                resolve(result)
+                resolve(error ? undefined : result)
             })
         })
     }
@@ -99,18 +68,28 @@ let redeem = new Database('mydb')
 redeem.Connect(url).then(database =>
 {
     redeem.DropCollection('gift')
-    .catch(exception => database.close())
     .then(result =>
     {
+        if (result == undefined)
+        {
+            database.close()
+            return
+        }
+
         let codes = [...Array(3000000)].map( _ =>
         {
             return { _id: GiftCode.random }
         })
 
         redeem.Insert('gift', codes)
-        .catch(exception => database.close())
         .then(result =>
         {
+            if (result == undefined)
+            {
+                database.close()
+                return
+            }
+
             console.log(result)
             database.close()
         })
