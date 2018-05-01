@@ -16,19 +16,22 @@ This is fairly simple. You don't need a particularly sophistciated algorithm to 
 
 const alfabet = '0123456789ABDEFGHJKLMNPRSTUVXYZ'
 
-let NewCode = function()
+class GiftCode
 {
-    let code = ''
-    ;[...Array(5)].map( _ =>
+    get random()
     {
-        code += alfabet[Math.floor(Math.random() * 32)]
-    })
-    code += '-'
-    ;[...Array(5)].map( _ =>
-    {
-        code += alfabet[Math.floor(Math.random() * 32)]
-    })
-    return code    
+        let code = ''
+        ;[...Array(5)].map( _ =>
+        {
+            code += alfabet[Math.floor(Math.random() * 32)]
+        })
+        code += '-'
+        ;[...Array(5)].map( _ =>
+        {
+            code += alfabet[Math.floor(Math.random() * 32)]
+        })
+        return code    
+    }
 }
 
-console.log(NewCode())
+console.log(GiftCode.random)
