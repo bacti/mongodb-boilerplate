@@ -24,7 +24,14 @@ let GiftCode =
 MongoClient.connect(url, (err, db) =>
 {
     if (err) throw err
-    var dbo = db.db('mydb')
+    let dbo = db.db('mydb')
+
+    // dbo.collection('gift').drop((err, result) =>
+    // {
+    //     if (err) throw err
+
+    //     db.close()
+    // })
 
     // dbo.collection('gift').insertOne({ _id: GiftCode.random }, (err, res) =>
     // {
@@ -40,10 +47,33 @@ MongoClient.connect(url, (err, db) =>
         db.close()
     })
 
-    // dbo.collection('gift').drop((err, delOK) =>
-    // {
-    //     if (err) throw err
-    //     if (delOK) console.log('Collection deleted')
-    //     db.close()
-    // })
 })
+
+let DropCollection = alias =>
+{
+    return new Promise((resolve, reject) =>
+    {
+        dbo.collection(alias).drop((error, result) =>
+        {
+            error && reject()
+            resolve(result)
+        })
+    })
+}
+
+class Database
+{
+    constructor(name)
+    {
+        this.name = name
+    }
+
+    Connect(url)
+    {
+        MongoClient.connect(url, (error, db) =>
+        {
+            error && reject()
+            resolve(db.db(this.name))
+        })
+    }
+}
