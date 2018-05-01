@@ -70,13 +70,7 @@ redeem.Connect(url).then(database =>
     redeem.DropCollection('gift')
     .then(result =>
     {
-        if (result == undefined)
-        {
-            database.close()
-            return
-        }
-
-        let codes = [...Array(3000000)].map( _ =>
+        let codes = [...Array(3)].map( _ =>
         {
             return { _id: GiftCode.random }
         })
@@ -84,12 +78,6 @@ redeem.Connect(url).then(database =>
         redeem.Insert('gift', codes)
         .then(result =>
         {
-            if (result == undefined)
-            {
-                database.close()
-                return
-            }
-
             console.log(result)
             database.close()
         })
