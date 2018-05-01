@@ -22,10 +22,52 @@ MongoClient.connect(url, (err, db) =>
         { name: 'Chuck', address: 'Main Road 989'},
         { name: 'Viola', address: 'Sideway 1633'}
     ]
-    dbo.collection('customers').insertMany(myobj, (err, res) =>
+    // var myobj =
+    // [
+    //     { _id: 154, name: 'Chocolate Heaven'},
+    //     { _id: 155, name: 'Tasty Lemon'},
+    //     { _id: 156, name: 'Vanilla Dream'}
+    // ]
+    // dbo.collection('customers').insertMany(myobj, (err, res) =>
+    // {
+    //     if (err) throw err
+    //     console.log(res)
+    //     db.close()
+    // })
+    // dbo.collection('customers').findOne({}, (err, result) =>
+    // {
+    //     if (err) throw err
+    //     console.log(result)
+    //     db.close()
+    // })
+
+    var query = { address: /^S/ }
+    dbo.collection('customers').find(query).toArray((err, result) =>
     {
-        if (err) throw err;
-        console.log("Number of documents inserted: " + res.insertedCount)
+        if (err) throw err
+        console.log(result)
         db.close()
     })
+
+    // var mysort = { address: -1 }
+    // dbo.collection('customers').find().sort(mysort).toArray((err, result) =>
+    // {
+    //     if (err) throw err
+    //     console.log(result)
+    //     db.close()
+    // })
+
+    // dbo.collection('customers').find({}, { _id: 0 }).toArray((err, result) =>
+    // {
+    //     if (err) throw err
+    //     console.log(result)
+    //     db.close()
+    // })
+
+    // dbo.collection('customers').drop((err, delOK) =>
+    // {
+    //     if (err) throw err
+    //     if (delOK) console.log('Collection deleted')
+    //     db.close()
+    // })
 })
