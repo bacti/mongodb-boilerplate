@@ -87,15 +87,15 @@ class Database
 let redeem = new Database('mydb')
 redeem.Connect(url).then(database =>
 {
-    redeem.DropCollection('gift').then(result =>
-    {
-        let dbo = database.db('mydb')
-        dbo.collection('gift').find({},).toArray((err, result) =>
-        {
-            if (err) throw err
-            console.log(result)
-            database.close()
-        })
-    })
+    redeem.DropCollection('gift')
     .catch(exception => database.close())
+    .then(result =>
+    {
+        let codes = [...Array(5)].map( _ =>
+        {
+            return { _id: GiftCode.random }
+        })
+        console.log(codes)
+        database.close()
+    })
 })
