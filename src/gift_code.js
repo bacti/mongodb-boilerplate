@@ -64,7 +64,7 @@ class Database
             MongoClient.connect(url, (error, database) =>
             {
                 error && reject()
-                this.database = database
+                this.dbo = database.db(this.name)
                 resolve(database)
             })
         })
@@ -72,10 +72,21 @@ class Database
 
     DropCollection(alias)
     {
-        let dbo = this.database.db(this.name)
         return new Promise((resolve, reject) =>
         {
-            dbo.collection(alias).drop((error, result) =>
+            this.dbo.collection(alias).drop((error, result) =>
+            {
+                error && reject()
+                resolve(result)
+            })
+        })
+    }
+
+    Insert(alias, objects)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            this.dbo.collection(alias).insertMany(objects, (error, result) =>
             {
                 error && reject()
                 resolve(result)
@@ -91,11 +102,17 @@ redeem.Connect(url).then(database =>
     .catch(exception => database.close())
     .then(result =>
     {
-        let codes = [...Array(5)].map( _ =>
+        let codes = [...Array(3000000)].map( _ =>
         {
             return { _id: GiftCode.random }
         })
-        console.log(codes)
-        database.close()
+
+        redeem.Insert('gift', codes)
+        .catch(exception => database.close())
+        .then(result =>
+        {
+            console.log(result)
+            database.close()
+        })
     })
 })
