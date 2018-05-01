@@ -72,17 +72,23 @@ class Database
     {
         return new Promise((resolve, reject) =>
         {
-            MongoClient.connect(url, (error, db) =>
+            MongoClient.connect(url, (error, database) =>
             {
                 error && reject()
-                resolve(db.db(this.name))
+                resolve(database)
             })
         })
     }
 }
 
 let database = new Database('mydb')
-database.Connect(url).then(dbo =>
+database.Connect(url).then(database =>
 {
-    console.log(dbo)
+    let dbo = database.db('mydb')
+    dbo.collection('gift').find({},).toArray((err, result) =>
+    {
+        if (err) throw err
+        console.log(result)
+        database.close()
+    })
 })
