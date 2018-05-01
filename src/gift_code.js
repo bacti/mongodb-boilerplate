@@ -21,33 +21,33 @@ let GiftCode =
     }
 }
 
-MongoClient.connect(url, (err, db) =>
-{
-    if (err) throw err
-    let dbo = db.db('mydb')
+// MongoClient.connect(url, (err, db) =>
+// {
+//     if (err) throw err
+//     let dbo = db.db('mydb')
 
-    // dbo.collection('gift').drop((err, result) =>
-    // {
-    //     if (err) throw err
+//     // dbo.collection('gift').drop((err, result) =>
+//     // {
+//     //     if (err) throw err
 
-    //     db.close()
-    // })
+//     //     db.close()
+//     // })
 
-    // dbo.collection('gift').insertOne({ _id: GiftCode.random }, (err, res) =>
-    // {
-    //     if (err) throw err
-    //     console.log(res)
-    //     db.close()
-    // })
+//     // dbo.collection('gift').insertOne({ _id: GiftCode.random }, (err, res) =>
+//     // {
+//     //     if (err) throw err
+//     //     console.log(res)
+//     //     db.close()
+//     // })
 
-    dbo.collection('gift').find({},).toArray((err, result) =>
-    {
-        if (err) throw err
-        console.log(result)
-        db.close()
-    })
+//     // dbo.collection('gift').find({},).toArray((err, result) =>
+//     // {
+//     //     if (err) throw err
+//     //     console.log(result)
+//     //     db.close()
+//     // })
 
-})
+// })
 
 let DropCollection = alias =>
 {
@@ -70,10 +70,19 @@ class Database
 
     Connect(url)
     {
-        MongoClient.connect(url, (error, db) =>
+        return new Promise((resolve, reject) =>
         {
-            error && reject()
-            resolve(db.db(this.name))
+            MongoClient.connect(url, (error, db) =>
+            {
+                error && reject()
+                resolve(db.db(this.name))
+            })
         })
     }
 }
+
+let database = new Database('mydb')
+database.Connect(url).then(dbo =>
+{
+    console.log(dbo)
+})
