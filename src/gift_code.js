@@ -49,17 +49,6 @@ let GiftCode =
 
 // })
 
-let DropCollection = alias =>
-{
-    return new Promise((resolve, reject) =>
-    {
-        dbo.collection(alias).drop((error, result) =>
-        {
-            error && reject()
-            resolve(result)
-        })
-    })
-}
 
 class Database
 {
@@ -75,20 +64,46 @@ class Database
             MongoClient.connect(url, (error, database) =>
             {
                 error && reject()
+                this.database = database
                 resolve(database)
+            })
+        })
+    }
+
+    DropCollection(alias)
+    {
+        let dbo = this.database.db(this.name)
+        return new Promise((resolve, reject) =>
+        {
+            dbo.collection(alias).drop((error, result) =>
+            {
+                error && reject()
+                resolve(result)
             })
         })
     }
 }
 
-let database = new Database('mydb')
-database.Connect(url).then(database =>
+let redeem = new Database('mydb')
+redeem.Connect(url).then(database =>
 {
-    let dbo = database.db('mydb')
-    dbo.collection('gift').find({},).toArray((err, result) =>
+    redeem.DropCollection('gift').then( _ =>
     {
-        if (err) throw err
-        console.log(result)
-        database.close()
+        let dbo = database.db('mydb')
+        dbo.collection('gift').find({},).toArray((err, result) =>
+        {
+            if (err) throw err
+            console.log(result)
+            database.close()
+        })
     })
+    .catch(exception => database.close())
+
+    // let dbo = database.db('mydb')
+    // dbo.collection('gift').find({},).toArray((err, result) =>
+    // {
+    //     if (err) throw err
+    //     console.log(result)
+    //     database.close()
+    // })
 })
