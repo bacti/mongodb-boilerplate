@@ -87,7 +87,7 @@ class Database
 let redeem = new Database('mydb')
 redeem.Connect(url).then(database =>
 {
-    redeem.DropCollection('gift').then( _ =>
+    redeem.DropCollection('gift').then(result =>
     {
         let dbo = database.db('mydb')
         dbo.collection('gift').find({},).toArray((err, result) =>
@@ -98,12 +98,4 @@ redeem.Connect(url).then(database =>
         })
     })
     .catch(exception => database.close())
-
-    // let dbo = database.db('mydb')
-    // dbo.collection('gift').find({},).toArray((err, result) =>
-    // {
-    //     if (err) throw err
-    //     console.log(result)
-    //     database.close()
-    // })
 })
