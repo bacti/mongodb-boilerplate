@@ -70,16 +70,25 @@ redeem.Connect(url).then(database =>
     redeem.DropCollection('gift')
     .then(result =>
     {
-        let codes = [...Array(3)].map( _ =>
+        let newcodes = []
+        ;[...Array(100)].map( _ =>
         {
-            return { _id: GiftCode.random }
+            let codes = [...Array(310800)].map( _ =>
+            {
+                return { _id: GiftCode.random }
+            })
+                newcodes.push(redeem.Insert('gift', codes))
         })
-
-        redeem.Insert('gift', codes)
-        .then(result =>
+        Promise.all(newcodes).then(result =>
         {
-            console.log(result)
-            database.close()
+            // console.log(result)
+            // database.close()
+            redeem.dbo.collection('gift').find({}, { _id: 0 }).toArray((err, result) =>
+            {
+                if (err) throw err
+                console.log(result.length)
+                database.close()
+            })
         })
     })
 })
